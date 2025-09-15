@@ -1,14 +1,16 @@
 FROM archlinux:latest
 
-# System update only (no extras — dotfiles will handle packages)
 RUN pacman -Syu --noconfirm && pacman -Scc --noconfirm
 
-# Environment variables (overridden by docker-compose .env)
-ENV USERNAME=user \
-    PASSWORD=password \
-    TIMEZONE=UTC \
-    HOSTNAME=arch-docker \
-    DOTFILES_REPO=""
+ARG USERNAME=user
+ARG PASSWORD=password
+ARG TIMEZONE=UTC
+ARG HOSTNAME=arch-docker
+
+ENV USERNAME=${USERNAME} \
+    PASSWORD=${PASSWORD} \
+    TIMEZONE=${TIMEZONE} \
+    HOSTNAME=${HOSTNAME}
 
 # Timezone (fallback safe)
 RUN ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime || true
@@ -17,6 +19,11 @@ RUN ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime || true
 RUN useradd -m -s /bin/bash $USERNAME \
     && echo "$USERNAME:$PASSWORD" | chpasswd
 
+RUN pacman -Sy --noconfirm sudo git zsh \
+    && echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+    && usermod -aG wheel ${USERNAME} \
+    && pacman -Scc --noconfirm
+
 # Set hostname
 RUN echo "$HOSTNAME" > /etc/hostname
 
@@ -24,10 +31,8 @@ RUN echo "$HOSTNAME" > /etc/hostname
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
-# Clone and run dotfiles bootstrap if provided
-RUN if [ ! -z "$DOTFILES_REPO" ]; then \
-      pacman -Sy --noconfirm git && \
-      git clone --recursive "$DOTFILES_REPO" /home/$USERNAME/.dotfiles && \
-      cd /home/$USERNAME/.dotfiles && \
-      if [ -f install.sh ]; then bash install.sh; fi; \
-    fi
+RUN cd /home/${USERNAME}/dotfiles && \
+    if [ -f install.sh ]; then sudo bash install.sh; fi;
+
+ENTRYPOINT ["/home/${USERNAME}/link.sh"]
+CMD ["zsh", "-l"]

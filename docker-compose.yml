@@ -1,17 +1,22 @@
 services:
   archvm:
-    build: .
+    build:
+      context: .
+      args:
+        USERNAME: ${USERNAME}
+        PASSWORD: ${PASSWORD}
+        TIMEZONE: ${TIMEZONE}
+        HOSTNAME: ${HOSTNAME}
     container_name: arch-vm
     tty: true
     stdin_open: true
     environment:
-      - USERNAME=${USERNAME}
-      - PASSWORD=${PASSWORD}
-      - TIMEZONE=${TIMEZONE}
-      - HOSTNAME=${HOSTNAME}
-      - DOTFILES_REPO=${DOTFILES_REPO}
+      USERNAME: ${USERNAME}
+      PASSWORD: ${PASSWORD}
+      TIMEZONE: ${TIMEZONE}
+      HOSTNAME: ${HOSTNAME}
     volumes:
-      # Shared folder between host and container
       - ./shared:/home/${USERNAME}/shared
+      - ./dotfiles:/home/${USERNAME}/dotfiles
     restart: unless-stopped
 
