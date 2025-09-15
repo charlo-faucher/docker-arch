@@ -31,6 +31,8 @@ RUN echo "$HOSTNAME" > /etc/hostname
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
+COPY dotfiles /home/${USERNAME}/dotfiles
+RUN ls -al
 RUN cd /home/${USERNAME}/dotfiles && \
     if [ -f install.sh ]; then sudo bash install.sh; fi;
 
