@@ -32,9 +32,8 @@ USER $USERNAME
 WORKDIR /home/$USERNAME
 
 COPY dotfiles /home/${USERNAME}/dotfiles
-RUN ls -al
-RUN cd /home/${USERNAME}/dotfiles && \
-    if [ -f install.sh ]; then sudo bash install.sh; fi;
+RUN cd /home/${USERNAME}/dotfiles
+RUN if [ -f install.sh ]; then sudo bash install.sh; fi;
 
-ENTRYPOINT ["/home/${USERNAME}/link.sh"]
+ENTRYPOINT ["/home/${USERNAME}/dotfiles/link.sh"]
 CMD ["zsh", "-l"]
