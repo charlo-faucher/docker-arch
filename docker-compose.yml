@@ -8,6 +8,7 @@ services:
         TIMEZONE: ${TIMEZONE}
         HOSTNAME: ${HOSTNAME}
     container_name: arch-vm
+    hostname: ${HOSTNAME}
     tty: true
     stdin_open: true
     environment:

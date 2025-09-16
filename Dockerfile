@@ -13,7 +13,9 @@ ENV USERNAME=${USERNAME} \
     HOSTNAME=${HOSTNAME}
 
 # Timezone (fallback safe)
-RUN ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime || true
+RUN ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
+    && echo $TIMEZONE > /etc/timezone
+
 
 # Create user
 RUN useradd -m -s /bin/bash $USERNAME \
