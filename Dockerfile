@@ -31,9 +31,10 @@ RUN echo "$HOSTNAME" > /etc/hostname
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
-COPY dotfiles /home/${USERNAME}/dotfiles
-RUN cd /home/${USERNAME}/dotfiles
-RUN if [ -f install.sh ]; then sudo bash install.sh; fi;
+RUN git clone https://github.com/charlo-faucher/dotfiles.git --recursive
 
-ENTRYPOINT ["/home/${USERNAME}/dotfiles/link.sh"]
+RUN cd /home/${USERNAME}/dotfiles
+RUN if [ -f dotfiles/install.sh ]; then sudo bash dotfiles/install.sh; fi;
+
+ENTRYPOINT ["/bin/bash", "-c", "/home/$USERNAME/dotfiles/link.sh"]
 CMD ["zsh", "-l"]

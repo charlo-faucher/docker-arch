@@ -17,6 +17,5 @@ services:
       HOSTNAME: ${HOSTNAME}
     volumes:
       - ./shared:/home/${USERNAME}/shared
-      - ./dotfiles:/home/${USERNAME}/dotfiles
     restart: unless-stopped
 
