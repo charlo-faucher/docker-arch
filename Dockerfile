@@ -36,5 +36,7 @@ RUN git clone https://github.com/charlo-faucher/dotfiles.git --recursive
 RUN cd /home/${USERNAME}/dotfiles
 RUN if [ -f dotfiles/install.sh ]; then sudo bash dotfiles/install.sh; fi;
 
-ENTRYPOINT ["/bin/bash", "-c", "/home/$USERNAME/dotfiles/link.sh"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN sudo chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["zsh", "-l"]
