@@ -2,7 +2,7 @@
 
 ## Build the image only
 ```bash
-
+docker-compose build --no-cache 
 ```
 
 ## Run the container
